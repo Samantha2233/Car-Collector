@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Car List</h1>
+
+{% for car in cars %}
+    <div class="card">
+        <a href="{% url 'detail' car.id%}">
+            <div class="card-content">
+                <span class="card-title">{{ car.make }} {{ car.model }} {{ car.year }}</span>
+                <p>Purchased: {{ car.purchase_date }}</p>
+                <p>Vehicle Cost: ${{ car.vehicle_cost }}</p>
+                <p>Registration and Tax: ${{ car.reg_and_tax }}</p>
+                <p>Repair and Initial Expenses: ${{ car.repair_and_init_expense }}</p>
+            </div>
+        </a>   
+    </div>
+{% endfor %}
+{% endblock %}
