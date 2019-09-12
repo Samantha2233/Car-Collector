@@ -5,7 +5,7 @@ import boto3
 from .models import Car, Agreement, Photo
 from .forms import AgreementForm
 
-S3_BASE_URL='s3.amazonaws.com/'
+S3_BASE_URL='https://s3.us-east-1.amazonaws.com/'
 BUCKET='carcollector-amerimex'
 
 def home(request):
@@ -50,15 +50,20 @@ class CarDelete(DeleteView):
 
 
 def add_photo(request, car_id):
+    # photo-file will be the "name" attribute on the <input type="file">
     photo_file = request.FILES.get('photo-file', None)
     if photo_file:
         s3 = boto3.client('s3')
+        # need a unique "key" for S3 / needs image file extension too
         key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        # just in case something goes wrong
         try:
-             s3.upload_fileobj(photo_file, BUCKET, key)
-             url = f"{S3_BASE_URL}{BUCKET}/{key}"
-             photo = Photo(url=url, car_id=car_id)
-             photo.save()
+            s3.upload_fileobj(photo_file, BUCKET, key)
+            # build the full url string
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            # we can assign to car_id or car (if you have a car object)
+            photo = Photo(url=url, car_id=car_id)
+            photo.save()
         except:
-            print('An error occured uploading file to S3')
+            print('An error occurred uploading file to S3')
     return redirect('detail', car_id=car_id)

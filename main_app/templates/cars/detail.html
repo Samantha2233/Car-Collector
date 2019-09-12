@@ -6,6 +6,19 @@
 <div class="row">
     <div>
         <div class="card">
+            {% for photo in car.photo_set.all %}
+                <img class="responsive-img card-panel" src="{{photo.url}}">
+            {% empty %}
+                <div class="card-panel teal-text center-align">No Photos Uploaded</div>
+            {% endfor %}
+
+            <form action="{% url 'add_photo' car.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+                {% csrf_token %}
+                <input type="file" name="photo-file">
+                <br><br>
+                <input type="submit" class="btn" value="Upload Photo">
+            </form>
+
             <div class="card-content">
                 <a href="{% url 'detail' car.id%}">
                     <div class="card-content">
@@ -23,6 +36,27 @@
             </div>
         </div>
     </div>
+
+
+    <div>
+        <h5>Customers renting this {{ car.model }}</h5>
+        <table class="striped">
+            <thead>
+                    <tr><th>Customer Name</th></tr>
+            </thead>
+            <tbody>
+                {% if car.customers.count %}
+                {% for c in car.customers.all %}
+                    <tr>
+                        <td>{{ c.name }}</td>
+                    </tr>
+                {% endfor %}
+                {% else %}
+                    <h5>No Customers</h5>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
     <div>
         <table class="striped">
             <thead>
@@ -38,6 +72,11 @@
             {% endfor %}
             </tbody>
         </table>
+        <hr>
+        
+
+        <h5>Write a New Agreement:</h5>
+
         <form action="{% url 'add_agreement' car.id %}" method="post">
             {% csrf_token %}
             {{ agreement_form.as_p }}

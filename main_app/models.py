@@ -8,6 +8,23 @@ TERMS = (
     ('BM', 'Bi-Monthly (60 Days)'),
 )
 
+class Customer(models.Model):
+    name = models.CharField(max_length=100)
+    mobile = models.IntegerField('Mobile Phone Number')
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.IntegerField()
+    license_num = models.CharField('Driver''s License No.', max_length=100)
+    l_state = models.CharField('License: State', max_length=100)
+    l_country = models.CharField('License: Country', max_length=100)
+    l_zip = models.CharField('License: Zip Code', max_length=100)
+    birth = models.DateField('Birth Date')
+
+    def __str__(self):
+        return f'{self.name}'
+   
+
 # Create your models here.
 class Car(models.Model):
     purchase_date = models.DateField()
@@ -17,6 +34,8 @@ class Car(models.Model):
     vehicle_cost = models.IntegerField()
     reg_and_tax = models.IntegerField()
     repair_and_init_expense = models.IntegerField()
+
+    customers = models.ManyToManyField(Customer)
 
     def __str__(self):
         return f'{self.make} {self.model} {self.year} ({self.id})'
