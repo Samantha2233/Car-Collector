@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 import uuid
 import boto3
-from .models import Car, Agreement, Photo
+from .models import Car, Agreement, Photo, AirFreshener
 from .forms import AgreementForm
 
 S3_BASE_URL='https://s3.us-east-1.amazonaws.com/'
@@ -20,10 +20,12 @@ def cars_index(request):
 
 def cars_detail(request, car_id):
     car = Car.objects.get(id=car_id)
+    unhad_air_fresheners = AirFreshener.objects.exclude(id__in = car.air_fresheners.all().values_list('id'))
     agreement_form = AgreementForm()
     return render(request, 'cars/detail.html', {
         'car': car,
-        'agreement_form': agreement_form
+        'agreement_form': agreement_form,
+        'air_fresheners': unhad_air_fresheners
     })
 
 def add_agreement(request, car_id):
@@ -42,7 +44,7 @@ class CarCreate(CreateView):
 
 class CarUpdate(UpdateView):
     model = Car
-    fields = '__all__'
+    fields = ['purchase_date', 'make', 'model', 'year', 'vehicle_cost', 'reg_and_tax', 'repair_and_init_expense']
 
 class CarDelete(DeleteView):
     model = Car
@@ -66,4 +68,9 @@ def add_photo(request, car_id):
             photo.save()
         except:
             print('An error occurred uploading file to S3')
+    return redirect('detail', car_id=car_id)
+
+
+def assoc_air_freshener(request, car_id, air_freshener_id):
+    Car.objects.get(id=car_id).air_fresheners.add(air_freshener_id)
     return redirect('detail', car_id=car_id)

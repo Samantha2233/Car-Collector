@@ -10,5 +10,6 @@ urlpatterns = [
     path('cars/<int:pk>/update/', views.CarUpdate.as_view(), name='cars_update'),
     path('cars/<int:pk>/delete/', views.CarDelete.as_view(), name='cars_delete'),
     path('cars/<int:car_id>/add_agreement/', views.add_agreement, name='add_agreement'),
-    path('cars/<int:car_id>/add_photo/', views.add_photo, name='add_photo')
+    path('cars/<int:car_id>/add_photo/', views.add_photo, name='add_photo'),
+    path('cars/<int:car_id>/assoc_air_freshener/<int:air_freshener_id>/', views.assoc_air_freshener, name='assoc_air_freshener'),
 ]

@@ -37,22 +37,65 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col s6">
+            <h5>{{ car.model }}'s Air Fresheners</h5>
+            {% if car.air_fresheners.count %}
+            {% for a in car.air_fresheners.all %}
+                <div class="card">
+                <div class="card-content">
+                    <span class="card-title">
+                    <span style="color: {{ a.color }}">{{ a.color }}</span> {{ a.scent }}
+                    </span>
+                </div>
+                </div>
+            {% endfor %}
+            {% else %}
+                <h5>No Air Fresheners</h5>
+            {% endif %}
+        </div>
+        <div class="col s6">
+            <h5>Available Air Fresheners</h5>
+            {% if air_fresheners.count %}
+                {% for a in air_fresheners.all %}
+                    <div class="card">
+                        <div class="card-content">
+                        <span class="card-title">
+                            A <span style="color: {{ a.color }}">{{ a.color }}</span> {{ a.scent }}
+                        </span>
+                        </div>
+                        <div class="card-action">
+                        <form action="{% url 'assoc_air_freshener' car.id a.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">Add</button>
+                        </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h5>{{car.model}} Already Has All Air Fresheners Available</h5>
+            {% endif %}
+        </div>
+    </div>
 
     <div>
-        <h5>Customers renting this {{ car.model }}</h5>
+       
         <table class="striped">
-            <thead>
-                    <tr><th>Customer Name</th></tr>
-            </thead>
             <tbody>
                 {% if car.customers.count %}
-                {% for c in car.customers.all %}
-                    <tr>
-                        <td>{{ c.name }}</td>
-                    </tr>
-                {% endfor %}
+                    {% for c in car.customers.all %}
+                        <h5>Customers renting this {{ car.model }}:</h5>
+                        <thead>
+                            <tr><th>Customer Name</th></tr>
+                        </thead>
+                        <tr>
+                            <td>{{ c.name }}</td>
+                        </tr>
+                    {% endfor %}
                 {% else %}
-                    <h5>No Customers</h5>
+                    <div class="card">
+                        <h5>No Customers are renting this car.</h5>
+                    </div>
                 {% endif %}
             </tbody>
         </table>
