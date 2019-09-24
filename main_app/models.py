@@ -77,8 +77,8 @@ class Agreement(models.Model):
         default=TERMS[2][0],
     )
 
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
 
     def __str__(self):
